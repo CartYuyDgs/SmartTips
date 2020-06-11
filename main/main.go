@@ -20,6 +20,8 @@ func init() {
 
 func main() {
 
+	Init()
+
 	//加载学校数据
 	http.HandleFunc("/index", handlerIndex)
 	//接口
