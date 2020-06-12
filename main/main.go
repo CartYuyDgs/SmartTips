@@ -1,6 +1,8 @@
 package main
 
 import (
+	"SmartTips/logic"
+	"encoding/json"
 	"github.com/unrolled/render"
 	"log"
 	"net/http"
@@ -25,7 +27,7 @@ func main() {
 	//加载学校数据
 	http.HandleFunc("/index", handlerIndex)
 	//接口
-	http.HandleFunc("/search", handlerSearch)
+	http.HandleFunc("/school/search", handlerSearch)
 
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
@@ -41,5 +43,22 @@ func handlerIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func handlerSearch(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	keyword := r.FormValue("keyword")
+	schools := logic.Search(keyword, 16)
+	responseSuccess(w, schools)
+}
 
+func responseSuccess(w http.ResponseWriter, data interface{}) {
+	m := make(map[string]interface{}, 16)
+	m["code"] = 0
+	m["message"] = "success"
+	m["data"] = data
+
+	res, err := json.Marshal(m)
+	if err != nil {
+		return
+	}
+
+	w.Write(res)
 }
