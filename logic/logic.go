@@ -12,6 +12,7 @@ import (
 
 var (
 	SchoolList []*SchoolInfo
+	trieTree   *Trie = NewTrie()
 )
 
 func InitLogic(filename string) (err error) {
@@ -54,7 +55,7 @@ func InitLogic(filename string) (err error) {
 		schoolInfo.SchoolType = st
 
 		SchoolList = append(SchoolList, &schoolInfo)
-
+		trieTree.Add(fmt.Sprintf("%s%d", schoolInfo.SchoolName, schoolInfo.SchoolId), &schoolInfo)
 		fmt.Printf("school info :%+v \n", schoolInfo)
 	}
 	return
@@ -67,6 +68,22 @@ func Search(keyword string, limit int) (schools []*SchoolInfo) {
 			if len(schools) > limit {
 				return
 			}
+		}
+	}
+	return
+}
+
+func SearchV2(keyword string, limit int) (schools []*SchoolInfo) {
+	nodes := trieTree.PrefixSearch(keyword)
+	for _, v := range nodes {
+		school, ok := v.Date.(*SchoolInfo)
+		if !ok {
+			log.Printf("invalid school data: %v \n", v)
+			continue
+		}
+		schools = append(schools, school)
+		if len(schools) > limit {
+			return
 		}
 	}
 	return

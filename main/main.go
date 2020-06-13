@@ -45,7 +45,7 @@ func handlerIndex(w http.ResponseWriter, r *http.Request) {
 func handlerSearch(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	keyword := r.FormValue("keyword")
-	schools := logic.Search(keyword, 16)
+	schools := logic.SearchV2(keyword, 16)
 	responseSuccess(w, schools)
 }
 
