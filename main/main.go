@@ -6,6 +6,7 @@ import (
 	"github.com/unrolled/render"
 	"log"
 	"net/http"
+	"time"
 )
 
 var (
@@ -45,7 +46,11 @@ func handlerIndex(w http.ResponseWriter, r *http.Request) {
 func handlerSearch(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	keyword := r.FormValue("keyword")
-	schools := logic.SearchV2(keyword, 16)
+	start := time.Now().UnixNano()
+	//schools := logic.SearchV2(keyword, 16)
+	schools := logic.Search(keyword, 16)
+	end := time.Now().UnixNano()
+	log.Printf("keyword : %s , cost : %d us\n", keyword, (end-start)/1000)
 	responseSuccess(w, schools)
 }
 
